@@ -1,5 +1,5 @@
 {
-    "name": "brianium/paratest",
+    "name": "turboparser/paratest",
     "require": {
         "php": ">=7.0",
         "ext-pcre": "*",
@@ -26,6 +26,11 @@
             "email": "scaturrob@gmail.com",
             "homepage": "http://brianscaturro.com",
             "role": "Lead"
+        },
+        {
+            "name": "Yuri Egorov",
+            "email": "yuri.egorov@me.com",
+            "role": "Contributor"
         }
     ],
     "bin": ["bin/paratest"],
