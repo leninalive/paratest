@@ -58,6 +58,13 @@ abstract class BaseRunner
      */
     protected $coverage = null;
 
+    /**
+     * Unique identifier for current tests pass
+     *
+     * @var string
+     */
+    protected $uniqueRunnerId = '';
+
     public function __construct(array $opts = [])
     {
         $this->options = new Options($opts);
@@ -67,6 +74,7 @@ abstract class BaseRunner
 
     public function run()
     {
+        $this->initializeTemp();
         $this->verifyConfiguration();
         $this->initCoverage();
         $this->load();
@@ -174,5 +182,24 @@ abstract class BaseRunner
     protected function getCoverage()
     {
         return $this->coverage;
+    }
+
+    protected function initializeTemp()
+    {
+        do {
+            $this->uniqueRunnerId = \uniqid(\getmypid() . '_' . \mt_rand() . '_', true);
+            $tempDirPath = implode(DIRECTORY_SEPARATOR, [sys_get_temp_dir(), $this->uniqueRunnerId]);
+        } while (is_dir($tempDirPath));
+
+        if (!mkdir($tempDirPath, 0777) && !is_dir($tempDirPath)) {
+            die ('Cannot allocate temp directory for tests');
+        }
+    }
+
+    protected function deInitializeTemp()
+    {
+        $tempDirPath = implode(DIRECTORY_SEPARATOR, [sys_get_temp_dir(), $this->uniqueRunnerId]);
+        \array_map('\\unlink', glob($tempDirPath . DIRECTORY_SEPARATOR . '*'));
+        \rmdir($tempDirPath);
     }
 }

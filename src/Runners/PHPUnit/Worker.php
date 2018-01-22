@@ -27,7 +27,7 @@ class Worker
      */
     private $currentlyExecuting;
 
-    public function start(string $wrapperBinary, $token = 1, $uniqueToken = null)
+    public function start(string $wrapperBinary, $token = 1, $uniqueToken = null, $runnerId = null)
     {
         $bin = 'PARATEST=1 ';
         if (is_numeric($token)) {
@@ -35,6 +35,9 @@ class Worker
         }
         if ($uniqueToken) {
             $bin .= "UNIQUE_TEST_TOKEN=$uniqueToken ";
+        }
+        if ($runnerId) {
+            $bin .= "UNIQUE_RUNNER_ID=$runnerId ";
         }
         $finder = new PhpExecutableFinder();
         $bin .= $finder->find() . " \"$wrapperBinary\"";

@@ -32,6 +32,7 @@ class WrapperRunner extends BaseRunner
         $this->assignAllPendingTests();
         $this->sendStopMessages();
         $this->waitForAllToFinish();
+        $this->deInitializeTemp();
         $this->complete();
     }
 
@@ -55,7 +56,7 @@ class WrapperRunner extends BaseRunner
                 $token = $i;
                 $uniqueToken = uniqid();
             }
-            $worker->start($wrapper, $token, $uniqueToken);
+            $worker->start($wrapper, $token, $uniqueToken, $this->uniqueRunnerId);
             $this->streams[] = $worker->stdout();
             $this->workers[] = $worker;
         }

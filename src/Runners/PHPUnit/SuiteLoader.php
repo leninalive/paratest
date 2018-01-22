@@ -212,25 +212,26 @@ class SuiteLoader
         $result = [];
 
         $groups = $this->methodGroups($method);
-
-        $dataProvider = $this->methodDataProvider($method);
-        if ($useDataProvider && isset($dataProvider)) {
-            $testFullClassName = '\\' . $class->getName();
-            $testClass = new $testFullClassName();
-            $result = [];
-            $datasetKeys = array_keys($testClass->$dataProvider());
-            foreach ($datasetKeys as $key) {
-                $test = sprintf(
-                    '%s with data set %s',
-                    $method->getName(),
-                    is_int($key) ? '#' . $key : '"' . $key . '"'
-                );
-                if ($this->testMatchOptions($class->getName(), $test, $groups)) {
-                    $result[] = $test;
+        if ($this->testMatchOptions($class->getName(), $method->getName(), $groups)) {
+            $dataProvider = $this->methodDataProvider($method);
+            if ($useDataProvider && isset($dataProvider)) {
+                $testFullClassName = '\\' . $class->getName();
+                $testClass = new $testFullClassName();
+                $result = [];
+                $datasetKeys = array_keys($testClass->$dataProvider());
+                foreach ($datasetKeys as $key) {
+                    $test = sprintf(
+                        '%s with data set %s',
+                        $method->getName(),
+                        is_int($key) ? '#' . $key : '"' . $key . '"'
+                    );
+                    if ($this->testMatchOptions($class->getName(), $test, $groups)) {
+                        $result[] = $test;
+                    }
                 }
+            } else {
+                $result = [$method->getName()];
             }
-        } elseif ($this->testMatchOptions($class->getName(), $method->getName(), $groups)) {
-            $result = [$method->getName()];
         }
 
         return $result;

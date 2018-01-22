@@ -39,6 +39,7 @@ class Runner extends BaseRunner
             $this->fillRunQueue();
             usleep(10000);
         }
+        $this->deInitializeTemp();
         $this->complete();
     }
 
@@ -72,7 +73,12 @@ class Runner extends BaseRunner
             $tokenData = $this->getNextAvailableToken();
             if ($tokenData !== false) {
                 $this->acquireToken($tokenData['token']);
-                $env = ['TEST_TOKEN' => $tokenData['token'], 'UNIQUE_TEST_TOKEN' => $tokenData['unique']] + Habitat::getAll();
+                $env = [
+                    'TEST_TOKEN' => $tokenData['token'],
+                    'UNIQUE_TEST_TOKEN' => $tokenData['unique'],
+                    'UNIQUE_RUNNER_ID' => $this->uniqueRunnerId
+                ];
+                $env += Habitat::getAll();
                 $this->running[$tokenData['token']] = array_shift($this->pending)->run($opts->phpunit, $opts->filtered, $env);
             }
         }
